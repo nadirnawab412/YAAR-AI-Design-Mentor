@@ -4,6 +4,7 @@ import time
 
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from google.genai.errors import ServerError
 
 
@@ -196,7 +197,12 @@ Analysis Data:
 
             response = client.models.generate_content(
                 model=GEMINI_MODEL,
-                contents=prompt
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    http_options=types.HttpOptions(
+                        timeout=30000
+                    )
+                )
             )
 
             # Success

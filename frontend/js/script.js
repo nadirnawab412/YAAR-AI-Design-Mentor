@@ -3,7 +3,7 @@
 // Frontend JavaScript
 // =========================================
 
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://127.0.0.1:8001";
 
 
 // =========================================
@@ -249,6 +249,12 @@ async function analyzeImage() {
 
     analyzeButton.disabled = true;
 
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(function () {
+        controller.abort();
+    }, 120000);
+
     try {
 
         const formData = new FormData();
@@ -259,7 +265,8 @@ async function analyzeImage() {
             `${API_BASE_URL}/review`,
             {
                 method: "POST",
-                body: formData
+                body: formData,
+                signal: controller.signal
             }
         );
 
@@ -324,6 +331,8 @@ async function analyzeImage() {
         showAnalysisError(error);
 
     } finally {
+
+        clearTimeout(timeoutId);
 
         loading.style.display = "none";
 
